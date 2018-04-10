@@ -88,4 +88,10 @@
            name="meta-raspberrypi"
            path="sources/meta-raspberrypi"/>
 
+  <project remote="github"
+           upstream="rocko"
+           revision="2f1825ea51179e3a7dbffead879a309d3b04494b"
+           name="renesas-rcar/meta-renesas"
+           path="sources/meta-rcar"/>
+
 </manifest>

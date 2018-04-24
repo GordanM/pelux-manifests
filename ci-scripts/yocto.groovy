@@ -63,7 +63,7 @@ void setupCache(String yoctoDir, String url) {
     }
 }
 
-void buildImageAndSDK(String yoctoDir, String imageName, boolean dev=true) {
+void buildImageAndSDK(String yoctoDir, String imageName, boolean update=false,  boolean dev=true) {
     // If we have a site.conf, that means we have caching, if we don't that
     // means we should do a fetchall.
     if (vagrant("test -f ${yoctoDir}/build/conf/site.conf", true) != 0) {
@@ -76,6 +76,9 @@ void buildImageAndSDK(String yoctoDir, String imageName, boolean dev=true) {
         vagrant("/vagrant/cookbook/yocto/build-images.sh ${yoctoDir} ${imageName}")
         if (dev) {
             vagrant("/vagrant/cookbook/yocto/build-images.sh ${yoctoDir} ${imageName}-dev")
+        }
+        if (update) {
+            vagrant("/vagrant/cookbook/yocto/build-images.sh ${yoctoDir} ${imageName}-update")
         }
     }
 
@@ -133,7 +136,8 @@ void buildWithLayer(String variant_name, String bitbake_image, String layer, Str
 
         // Build the images
         try {
-            buildImageAndSDK(yoctoDir, bitbake_image)
+            boolean buildUpdate = variant_name.startsWith("rpi")
+            buildImageAndSDK(yoctoDir, bitbake_image, buildUpdate)
         } finally { // Archive cache even if there were errors.
             boolean archive = env.ARCHIVE_CACHE == "true"
             archiveCache(yoctoDir, archive, env.YOCTO_CACHE_ARCHIVE_PATH)
@@ -168,7 +172,8 @@ void buildManifest(String variant_name, String bitbake_image) {
 
         // Build the images
         try {
-            buildImageAndSDK(yoctoDir, bitbake_image)
+            boolean buildUpdate = variant_name.startsWith("rpi")
+            buildImageAndSDK(yoctoDir, bitbake_image, buildUpdate)
         } finally { // Archive cache even if there were errors.
             boolean archive = env.ARCHIVE_CACHE == "true"
             archiveCache(yoctoDir, archive, env.YOCTO_CACHE_ARCHIVE_PATH)
